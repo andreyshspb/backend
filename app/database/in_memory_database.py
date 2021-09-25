@@ -12,15 +12,17 @@ from app.responses.notes_getting import NotesGettingResponse
 
 
 class InMemoryDatabase(Base):
-    notes = []
-    next_note_id = len(notes)
+
+    def __init__(self):
+        self.notes = []
+        self.next_note_id = len(self.notes)
 
     def get_notes(self, request: NotesGettingRequest) -> NotesGettingResponse:
         result: List[NoteDescription] = []
         for note in self.notes:
             if note["author_id"] == request.author_id:
                 result.append(NoteDescription(note["author_id"], note["topic"]))
-        return NotesGettingResponse(result)
+        return NotesGettingResponse(result[request.offset:][:request.count])
 
     def create_note(self, request: NoteCreationRequest) -> NoReturn:
         self.notes.append({
