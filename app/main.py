@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 
 from app.database.base import Base
-from app.database.fake_database import FakeDatabase
+from app.database.in_memory_database import InMemoryDatabase
 
 from app.requests.notes_getting import NotesGettingRequest
 from app.requests.note_creation import NoteCreationRequest
@@ -29,7 +29,7 @@ def get_application():
 
 
 def get_database() -> Base:
-    return FakeDatabase()
+    return InMemoryDatabase()
 
 
 database = get_database()

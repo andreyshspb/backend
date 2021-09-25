@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, NoReturn
 
 from app.database.base import Base
 
@@ -11,7 +11,7 @@ from app.responses.notes_getting import NoteDescription
 from app.responses.notes_getting import NotesGettingResponse
 
 
-class FakeDatabase(Base):
+class InMemoryDatabase(Base):
     notes = []
     next_note_id = len(notes)
 
@@ -22,7 +22,7 @@ class FakeDatabase(Base):
                 result.append(NoteDescription(note["author_id"], note["topic"]))
         return NotesGettingResponse(result)
 
-    def create_note(self, request: NoteCreationRequest) -> None:
+    def create_note(self, request: NoteCreationRequest) -> NoReturn:
         self.notes.append({
             "note_id": self.next_note_id,
             "author_id": request.author_id,
@@ -31,13 +31,13 @@ class FakeDatabase(Base):
         })
         self.next_note_id += 1
 
-    def delete_note(self, request: NoteDeletingRequest) -> None:
+    def delete_note(self, request: NoteDeletingRequest) -> NoReturn:
         for i in range(len(self.notes)):
             if self.notes[i]["note_id"] == request.note_id:
                 self.notes.pop(i)
                 return
 
-    def edit_note(self, request: NoteEditingRequest) -> None:
+    def edit_note(self, request: NoteEditingRequest) -> NoReturn:
         for note in self.notes:
             if note["note_id"] == request.note_id:
                 note["topic"] = request.new_topic
