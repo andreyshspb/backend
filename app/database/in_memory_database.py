@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, NoReturn
 
 from app.database.base import Base
 
@@ -11,18 +11,20 @@ from app.responses.notes_getting import NoteDescription
 from app.responses.notes_getting import NotesGettingResponse
 
 
-class FakeDatabase(Base):
-    notes = []
-    next_note_id = len(notes)
+class InMemoryDatabase(Base):
+
+    def __init__(self):
+        self.notes = []
+        self.next_note_id = len(self.notes)
 
     def get_notes(self, request: NotesGettingRequest) -> NotesGettingResponse:
         result: List[NoteDescription] = []
         for note in self.notes:
             if note["author_id"] == request.author_id:
                 result.append(NoteDescription(note["author_id"], note["topic"]))
-        return NotesGettingResponse(result)
+        return NotesGettingResponse(result[request.offset:][:request.count])
 
-    def create_note(self, request: NoteCreationRequest) -> None:
+    def create_note(self, request: NoteCreationRequest) -> NoReturn:
         self.notes.append({
             "note_id": self.next_note_id,
             "author_id": request.author_id,
@@ -31,13 +33,13 @@ class FakeDatabase(Base):
         })
         self.next_note_id += 1
 
-    def delete_note(self, request: NoteDeletingRequest) -> None:
+    def delete_note(self, request: NoteDeletingRequest) -> NoReturn:
         for i in range(len(self.notes)):
             if self.notes[i]["note_id"] == request.note_id:
                 self.notes.pop(i)
                 return
 
-    def edit_note(self, request: NoteEditingRequest) -> None:
+    def edit_note(self, request: NoteEditingRequest) -> NoReturn:
         for note in self.notes:
             if note["note_id"] == request.note_id:
                 note["topic"] = request.new_topic
