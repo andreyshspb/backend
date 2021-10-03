@@ -6,6 +6,7 @@ from app.database.base import Base
 from app.database.in_memory_database import InMemoryDatabase
 
 from app.restapi import start_restapi
+from app.graphql import start_graphql
 
 
 def get_application():
@@ -21,3 +22,4 @@ app = get_application()
 
 
 start_restapi(app, database)
+start_graphql(app, database)
