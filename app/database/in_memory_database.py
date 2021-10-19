@@ -14,20 +14,7 @@ from app.responses.notes_getting import NotesGettingResponse
 class InMemoryDatabase(Base):
 
     def __init__(self):
-        self.notes = [
-            {
-                "note_id": 0,
-                "author_id": 0,
-                "topic": "Math",
-                "content": "Watch Lecture"
-            },
-            {
-                "note_id": 1,
-                "author_id": 0,
-                "topic": "ML",
-                "content": "Test Preparation"
-            }
-        ]
+        self.notes = []
         self.next_note_id = len(self.notes)
 
     def get_notes(self, request: NotesGettingRequest) -> NotesGettingResponse:
