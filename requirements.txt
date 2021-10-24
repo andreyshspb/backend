@@ -14,3 +14,5 @@ graphene
 starlette
 
 psycopg2
+
+pika
