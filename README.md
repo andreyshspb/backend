@@ -42,3 +42,29 @@ Put next query and run:
   }
 }
 ```
+
+# Rabbit testing
+
+Run general application
+```
+fastapi run
+```
+
+Run statistics application
+```
+cd app/statistics_service
+uvicorn main:app --reload --port 8080
+```
+
+Make post creation request
+```
+curl --header "Content-Type: application/json" \
+     --request POST \
+     --data '{"author_id": 1, "topic": "fuck", "content": "fuck"}' \
+     http://127.0.0.1:8000/create/note
+```
+
+Make get statistics request. It returns some topic
+```
+curl --request GET http://127.0.0.1:8080/get/statistics/
+```

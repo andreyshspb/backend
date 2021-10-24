@@ -5,6 +5,12 @@ from app.requests.note_editing import NoteEditingRequest
 
 from app.responses.notes_getting import NotesGettingResponse
 
+from app.rabbit.message_broker import RabbitMessageBroker
+from app.core.config import settings
+
+message_broker = RabbitMessageBroker(settings.MESSAGE_BROKER_HOST,
+                                     settings.MESSAGE_BROKER_PORT)
+
 
 def start_restapi(app, database):
 
@@ -14,6 +20,8 @@ def start_restapi(app, database):
 
     @app.post("/create/note")
     async def create_note(request: NoteCreationRequest) -> None:
+        message_broker.publish(exchange="stable", routing_key="create",
+                               body=bytes(request.content, encoding="utf8"))
         return database.create_note(request)
 
     @app.post("/delete/note")
