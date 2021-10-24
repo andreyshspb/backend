@@ -1,3 +1,10 @@
+# Database Running
+
+```
+docker-compose build
+docker-compose up
+```
+
 # Application Running
 
 ```
